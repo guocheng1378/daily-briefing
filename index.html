@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>每日60秒早报 · 每天自动更新</title>
+<meta name="description" content="每天 60 秒读懂世界，每日自动更新的新闻摘要归档站。">
+<style>
+:root{--bg:#0f1420;--card:#171e2e;--fg:#e8ecf4;--muted:#8b95ab;--acc:#5b8cff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:24px;margin:8px 0 4px}
+.sub{color:var(--muted);font-size:14px;margin-bottom:20px}
+.today{display:block;background:linear-gradient(135deg,#1e3a8a33,#171e2e);border:1px solid #2a3550;border-radius:14px;padding:18px 20px;margin-bottom:26px;text-decoration:none;color:var(--fg)}
+.today:hover{border-color:var(--acc)}
+.today .d{font-size:20px;font-weight:600;color:var(--acc)}
+.today .n{color:var(--muted);font-size:14px}
+h2{font-size:16px;color:var(--muted);font-weight:500;margin:0 0 12px}
+ul.arch{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+ul.arch li a{text-decoration:none;color:var(--fg);display:flex;justify-content:space-between;background:var(--card);border-radius:10px;padding:12px 16px}
+ul.arch li a:hover{background:#1c2740}
+ul.arch .cnt{color:var(--muted);font-size:14px}
+footer{margin-top:36px;color:#5b6478;font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>📰 每日60秒读懂世界</h1>
+<div class="sub">每天自动更新 · 保留最近 30 天归档</div>
+<main id="app"><div class="today"><div class="d">加载中…</div></div></main>
+<footer>由 OpenClaw 定时抓取更新 · 数据源：每日60秒新闻 API（仅摘要，无原文跳转）</footer>
+</div>
+<script>
+fetch('days.json?t='+Date.now()).then(r=>r.json()).then(days=>{
+  if(!days||!days.length){document.getElementById('app').textContent='暂无数据';return;}
+  const t=days[0];
+  let h='<a class="today" href="./'+t.date+'/"><div class="d">今日早报 · '+t.date+'</div><div class="n">'+t.count+' 条要闻，点击阅读 →</div></a>';
+  if(days.length>1){
+    h+='<h2>历史归档</h2><ul class="arch">';
+    days.slice(1).forEach(d=>{h+='<li><a href="../'+d.date+'/"><span>'+d.date+'</span><span class="cnt">'+d.count+' 条</span></a></li>'});
+    h+='</ul>';
+  }
+  document.getElementById('app').innerHTML=h;
+}).catch(()=>{document.getElementById('app').textContent='加载失败，请刷新重试'});
+</script>
+</body>
+</html>
